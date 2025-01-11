@@ -1,0 +1,144 @@
+/* Reset default margin and padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    margin: 0;
+}
+
+.notify {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #6c63ff;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.chatbox {
+    width: 60%;
+    height: 70%;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.chatbox-header {
+    background-color: #6c63ff;
+    color: #fff;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 20px;
+}
+
+.chatbox-body {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    background-color: #f0f0f0;
+}
+
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Jarak antar pesan */
+}
+
+.chat-message {
+    display: flex;
+    justify-content: space-between; /* Username dan pesan di kiri, waktu di kanan */
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.chat-username {
+    font-weight: bold;
+    color: #333;
+    margin-right: 5px;
+}
+
+.chat-content {
+    color: #555;
+    flex: 1; /* Ambil ruang tersisa di antara username dan waktu */
+}
+
+.chat-time {
+    font-size: 0.8em;
+    color: #999;
+    white-space: nowrap; /* Mencegah waktu terpotong */
+    margin-left: 10px; /* Jarak kecil dari konten pesan */
+}
+
+.chatbox-footer {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background-color: #ddd;
+    border-top: 1px solid #ccc;
+    width: 100%;
+}
+
+.chatbox-footer form {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+}
+
+.chatbox-footer input {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.chatbox-footer button {
+    padding: 10px 20px;
+    background-color: #6c63ff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.chatbox-footer button:hover {
+    background-color: #5a54d1;
+}
+
+.logout-button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.logout-button:hover {
+    background-color: #e63939;
+}
