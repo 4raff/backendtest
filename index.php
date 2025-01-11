@@ -49,5 +49,5 @@
 ?>
 
 <?php
-    include "index.html";
+    include "layout/index.html";
 ?>

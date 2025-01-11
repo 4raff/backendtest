@@ -7,5 +7,5 @@
 ?>
 
 <?php
-    include "dashboard.html";
+    include "layout/dashboard.html";
 ?>
