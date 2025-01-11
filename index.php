@@ -4,14 +4,14 @@
     $login_message="";
     $register_message="";
     if(isset($_SESSION["is_Login"])){
-        header("Location: dashboard/dashboard.php");
+        header("Location: dashboard.php");
     }
     if(isset($_POST["register"])){
         $username = $_POST["username"];
         $password = $_POST["password"];
         $email = $_POST["email"];
         if ($username == "" || $password == "" || $email == "") {
-            $register_message = "Please fill all the fields!";
+            $register_message = "Unregistered, Please fill all the fields!";
         } else {
             try {
                 $sql = "INSERT INTO users (username, password, email) VALUES ('$username', '$password', '$email')";
@@ -39,9 +39,9 @@
                 $data = $result->fetch_assoc();
                 $_SESSION["username"] = $data["username"];
                 $_SESSION["is_Login"] = true;
-                header("Location: dashboard/dashboard.php");
+                header("Location: dashboard.php");
             }else{
-                $login_message = "Login Failed!";
+                $login_message = "Credentials Doesnt Match!";
             }
             $db->close();
         }
