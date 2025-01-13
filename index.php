@@ -1,51 +1,67 @@
 <?php
-    include "service/database.php";
-    session_start();
-    $login_message="";
-    $register_message="";
-    if(isset($_SESSION["is_Login"])){
-        header("Location: dashboard.php");
-    }
-    if(isset($_POST["register"])){
-        $username = $_POST["username"];
-        $password = $_POST["password"];
-        $email = $_POST["email"];
-        if ($username == "" || $password == "" || $email == "") {
-            $register_message = "Unregistered, Please fill all the fields!";
-        } else {
-            try {
-                $sql = "INSERT INTO users (username, password, email) VALUES ('$username', '$password', '$email')";
-                if($db->query($sql)){
-                    $register_message = "Register Success!";
-                }else{
-                    $register_message = "Register Failed!";
-                }
-            } catch(mysqli_sql_exception){
-                $register_message = "Account is Available!";
+include "service/database.php";
+session_start();
+$login_message = "";
+$register_message = "";
+
+// Cek apakah pengguna sudah login, jika ya, arahkan ke dashboard
+if (isset($_SESSION["is_Login"])) {
+    header("Location: dashboard.php");
+    exit();
+}
+
+// Proses pendaftaran
+if (isset($_POST["register"])) {
+    $username = $_POST["username"];
+    $password = $_POST["password"];
+    $email = $_POST["email"];
+
+    if ($username == "" || $password == "" || $email == "") {
+        $_SESSION['register_message'] = "Unregistered, Please fill all the fields!";
+    } else {
+        // Generate a unique avatar using RoboHash
+        $avatar_url = 'https://robohash.org/' . urlencode($username);
+
+        try {
+            $sql = "INSERT INTO users (username, password, email, profile_picture) VALUES ('$username', '$password', '$email', '$avatar_url')";
+            if ($db->query($sql)) {
+                $_SESSION['register_message'] = "Register Success!";
+            } else {
+                $_SESSION['register_message'] = "Register Failed!";
             }
-            
-            $db->close();
+        } catch (mysqli_sql_exception) {
+            $_SESSION['register_message'] = "Account is Available!";
         }
     }
-    if(isset($_POST["login"])){
-        $email = $_POST["email"];
-        $password = $_POST["password"];
-        if ($email == "" || $password == "") {
-            $login_message = "Please fill all the fields!";
+    header('Location: index.php');
+    exit();
+}
+
+// Proses login
+if (isset($_POST["login"])) {
+    $email = $_POST["email"];
+    $password = $_POST["password"];
+
+    if ($email == "" || $password == "") {
+        $_SESSION['login_message'] = "Please fill all the fields!";
+    } else {
+        $sql = "SELECT * FROM users WHERE email='$email' AND password='$password'";
+        $result = $db->query($sql);
+        if ($result->num_rows > 0) {
+            $data = $result->fetch_assoc();
+            $_SESSION["username"] = $data["username"];
+            $_SESSION["profile_picture"] = $data["profile_picture"];
+            $_SESSION["is_Login"] = true;
+            header("Location: dashboard.php");
+            exit();
         } else {
-            $sql = "SELECT * FROM users WHERE email='$email' AND password='$password'";
-            $result = $db->query($sql);
-            if($result->num_rows > 0){
-                $data = $result->fetch_assoc();
-                $_SESSION["username"] = $data["username"];
-                $_SESSION["is_Login"] = true;
-                header("Location: dashboard.php");
-            }else{
-                $login_message = "Credentials Doesnt Match!";
-            }
-            $db->close();
+            $_SESSION['login_message'] = "Credentials Doesn't Match!";
         }
     }
+    header('Location: index.php');
+    exit();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -63,7 +79,7 @@
     
     <div class="container" id="container">
         <div class="form-container sign-up">
-            <form action = "index.php" method = "post">
+            <form action="index.php" method="post">
                 <h1>Create Account</h1>
                 <div class="social-icons">
                     <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
@@ -71,17 +87,27 @@
                     <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
                     <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
                 </div>
-                <span>or use your email for registeration</span>
-                <i><?= $register_message ?></i>
-                <input type="text" name="username"placeholder="Name">
-                <input type="email" name="email"placeholder="Email">
-                <input type="password" name="password"placeholder="Password">
-                <button type="submit"name="register">Sign Up</button>
+                <span>or use your email for registration</span>
+                
+                <!-- Display register message from session -->
+                <i>
+                    <?php
+                    if (isset($_SESSION['register_message'])) {
+                        echo $_SESSION['register_message'];
+                        unset($_SESSION['register_message']); // Hapus pesan setelah ditampilkan
+                    }
+                    ?>
+                </i>
+                
+                <input type="text" name="username" placeholder="Name">
+                <input type="email" name="email" placeholder="Email">
+                <input type="password" name="password" placeholder="Password">
+                <button type="submit" name="register">Sign Up</button>
             </form>
         </div>
+        
         <div class="form-container sign-in">
-            <form action = "index.php" method = "post">
-                <i><?= $register_message ?></i>
+            <form action="index.php" method="post">
                 <h1>Sign In</h1>
                 <div class="social-icons">
                     <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
@@ -89,14 +115,22 @@
                     <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
                     <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
                 </div>
-                <i><?= $login_message ?></i>
                 <span>or use your email password</span>
-                <input type="email" name="email"placeholder="Email">
-                <input type="password" name="password"placeholder="Password">
+                <i>
+                    <?php
+                    if (isset($_SESSION['login_message'])) {
+                        echo $_SESSION['login_message'];
+                        unset($_SESSION['login_message']); // Hapus pesan setelah ditampilkan
+                    }
+                    ?>
+                </i>
+                <input type="email" name="email" placeholder="Email">
+                <input type="password" name="password" placeholder="Password">
                 <a href="#">Forget Your Password?</a>
-                <button type="submit"name="login">Sign In</button>
+                <button type="submit" name="login">Sign In</button>
             </form>
         </div>
+
         <div class="toggle-container">
             <div class="toggle">
                 <div class="toggle-panel toggle-left">
